@@ -2,6 +2,7 @@ package br.com.upload.bean;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Scanner;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -9,6 +10,7 @@ import javax.servlet.http.Part;
 
 import br.com.upload.interfaces.UploadArquivoInterface;
 import br.com.upload.interfaces.impl.UploadArquivoInterfaceImpl;
+import br.com.upload.model.Aluno;
 import br.com.upload.model.Entidade;
 
 @RequestScoped
@@ -22,6 +24,31 @@ public class UploadAquivoBean {
 	private Part arquivo;
 	
 	public void upload() throws Exception {
+		
+		// CSV
+		try (Scanner scanner = new Scanner(arquivo.getInputStream(), "UTF-8")) {
+			
+			scanner.useDelimiter(";");
+			
+			while (scanner.hasNext()) {
+				
+				String linha = scanner.nextLine();
+				
+				if (linha != null && !linha.trim().isEmpty()) {				
+					linha = linha.replaceAll("\"", "");
+					
+					String[] dados = linha.split("\\;");
+					System.out.println("Nome: " + dados[0] + " - E-mail " + dados[1]);
+					
+					Aluno aluno = new Aluno();
+					aluno.setNome(dados[0]);
+					aluno.setEmail(dados[1]);
+					
+					uploadArquivoInterface.mergeAluno(aluno);					
+				}
+			}
+		}
+		
 		byte[] arquivoByte = toByteArray(arquivo.getInputStream());
 		entidade.setArquivo(arquivoByte);
 		uploadArquivoInterface.salvarArquivo(entidade);		
