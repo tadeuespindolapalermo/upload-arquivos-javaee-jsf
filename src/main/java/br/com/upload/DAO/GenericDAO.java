@@ -1,5 +1,7 @@
 package br.com.upload.DAO;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
@@ -23,6 +25,14 @@ public class GenericDAO<T> {
 		Aluno returnEntity = entityManager.merge(aluno);
 		entityTransaction.commit();
 		return returnEntity;
+	}
+	
+	public List<Object> listar() {
+		return entityManager.createQuery("from Entidade", Object.class).getResultList();
+	}
+	
+	public Object buscar(String fileDownloadId) {
+		return entityManager.find(Object.class, Long.parseLong(fileDownloadId));
 	}
 
 }

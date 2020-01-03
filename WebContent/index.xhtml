@@ -26,6 +26,21 @@
 					<f:ajax execute="@form" render="@all"/>
 				</h:commandButton>
 			</h:panelGrid>
+			
+			<h:dataTable value="#{uploadAquivoBean.list}" var="file" width="100%">
+				<h:column>
+					<h:outputText value="#{file.id}" />
+				</h:column>
+				<h:column>
+					<h:outputText value="#{file.descricao}" />
+				</h:column>
+				<h:column>
+					<h:commandLink immediate="true" actionListener="#{uploadAquivoBean.download}" value="Download">
+						<f:param name="fileDownloadId" value="#{file.id}" />
+					</h:commandLink>
+				</h:column>
+			</h:dataTable>
+			
 		</h:form>
 	</h:body>
 </html>
